@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
-console.log("BUILD CHECK 777");
+
 /* ══════════════════════════════════════════════════════
    LIQUID ETHER ENGINE
 ══════════════════════════════════════════════════════ */
@@ -79,7 +79,7 @@ function LiquidEther({
     const vf=`precision highp float;uniform sampler2D velocity;uniform sampler2D velocity_new;uniform float v;uniform vec2 px;uniform float dt;varying vec2 uv;void main(){vec2 old=texture2D(velocity,uv).xy;vec2 new0=texture2D(velocity_new,uv+vec2(px.x*2.0,0.0)).xy;vec2 new1=texture2D(velocity_new,uv-vec2(px.x*2.0,0.0)).xy;vec2 new2=texture2D(velocity_new,uv+vec2(0.0,px.y*2.0)).xy;vec2 new3=texture2D(velocity_new,uv-vec2(0.0,px.y*2.0)).xy;vec2 newv=4.0*old+v*dt*(new0+new1+new2+new3);newv/=4.0*(1.0+v*dt);gl_FragColor=vec4(newv,0.0,0.0);}`;
     class ShaderPass{constructor(props){this.props=props||{};this.uniforms=this.props.material?.uniforms;}init(){this.scene=new THREE.Scene();this.camera=new THREE.Camera();if(this.uniforms){this.material=new THREE.RawShaderMaterial(this.props.material);this.geometry=new THREE.PlaneGeometry(2,2);this.plane=new THREE.Mesh(this.geometry,this.material);this.scene.add(this.plane);}}update(){if(!Common.renderer||!this.scene||!this.camera)return;Common.renderer.setRenderTarget(this.props.output||null);Common.renderer.render(this.scene,this.camera);Common.renderer.setRenderTarget(null);}}
     class Advection extends ShaderPass{constructor(s){super({material:{vertexShader:fv,fragmentShader:af,uniforms:{boundarySpace:{value:s.cellScale},px:{value:s.cellScale},fboSize:{value:s.fboSize},velocity:{value:s.src.texture},dt:{value:s.dt},isBFECC:{value:true}}},output:s.dst});this.init();}init(){super.init();const bg=new THREE.BufferGeometry();const v=new Float32Array([-1,-1,0,-1,1,0,-1,1,0,1,1,0,1,1,0,1,-1,0,1,-1,0,-1,-1,0]);bg.setAttribute('position',new THREE.BufferAttribute(v,3));const bm=new THREE.RawShaderMaterial({vertexShader:lv,fragmentShader:af,uniforms:this.uniforms});this.line=new THREE.LineSegments(bg,bm);this.scene.add(this.line);}update(args){if(!this.uniforms)return;this.uniforms.dt.value=args.dt;this.line.visible=args.isBounce;this.uniforms.isBFECC.value=args.BFECC;super.update();}}
-    class ExternalForce extends ShaderPass{constructor(s){super({output:s.dst});this.init(s);}init(s){super.init();const mg=new THREE.PlaneGeometry(1,1);const mm=new THREE.RawShaderMaterial({vertexShader:mv,fragmentShader:ef,blending:THREE.AdditiveBlending,depthWrite:false,uniforms:{px:{value:s.cellScale},force:{value:new THREE.Vector2(0,0)},center:{value:new THREE.Vector2(0,0)},scale:{value:new THREE.Vector2(s.cursor_size,s.cursor_size)}}});this.mouse=new THREE.Mesh(mg,mm);this.scene.add(this.mouse);}update(args){const u=this.mouse.material.uniforms;u.force.value.set((Mouse.diff.x/2)*args.mouse_force,(Mouse.diff.y/2)*args.mouse_force);u.center.value.set(Mouse.coords.x,Mouse.coords.y);u.scale.value.set(args.cursor_size,args.cursor_size);super.update();}}
+    class ExternalForce extends ShaderPass{constructor(s){super({output:s.dst});this.init(s);}init(s){super.init();const mg=new THREE.PlaneGeometry(1,1);const mm=new THREE.RawShaderMaterial({vertexShader:mv,fragmentShader:ef,blending:THREE.NoBlending,depthWrite:false,uniforms:{px:{value:s.cellScale},force:{value:new THREE.Vector2(0,0)},center:{value:new THREE.Vector2(0,0)},scale:{value:new THREE.Vector2(s.cursor_size,s.cursor_size)}}});this.mouse=new THREE.Mesh(mg,mm);this.scene.add(this.mouse);}update(args){const u=this.mouse.material.uniforms;u.force.value.set((Mouse.diff.x/2)*args.mouse_force,(Mouse.diff.y/2)*args.mouse_force);u.center.value.set(Mouse.coords.x,Mouse.coords.y);u.scale.value.set(args.cursor_size,args.cursor_size);super.update();}}
     class Viscous extends ShaderPass{constructor(s){super({material:{vertexShader:fv,fragmentShader:vf,uniforms:{boundarySpace:{value:s.boundarySpace},velocity:{value:s.src.texture},velocity_new:{value:s.dst_.texture},v:{value:s.viscous},px:{value:s.cellScale},dt:{value:s.dt}}},output:s.dst,output0:s.dst_,output1:s.dst});this.init();}update(args){const{iterations,dt}=args;for(let i=0;i<iterations;i++){const fi=i%2===0?this.props.output0:this.props.output1,fo=i%2===0?this.props.output1:this.props.output0;this.uniforms.velocity_new.value=fi.texture;this.props.output=fo;this.uniforms.dt.value=dt;super.update();}return iterations%2===0?this.props.output0:this.props.output1;}}
     class Divergence extends ShaderPass{constructor(s){super({material:{vertexShader:fv,fragmentShader:df,uniforms:{boundarySpace:{value:s.boundarySpace},velocity:{value:s.src.texture},px:{value:s.cellScale},dt:{value:s.dt}}},output:s.dst});this.init();}update(args){if(this.uniforms)this.uniforms.velocity.value=args.vel.texture;super.update();}}
     class Poisson extends ShaderPass{constructor(s){super({material:{vertexShader:fv,fragmentShader:pf,uniforms:{boundarySpace:{value:s.boundarySpace},pressure:{value:s.dst_.texture},divergence:{value:s.src.texture},px:{value:s.cellScale}}},output:s.dst,output0:s.dst_,output1:s.dst});this.init();}update(args){const{iterations}=args;for(let i=0;i<iterations;i++){const pi=i%2===0?this.props.output0:this.props.output1,po=i%2===0?this.props.output1:this.props.output0;this.uniforms.pressure.value=pi.texture;this.props.output=po;super.update();}return iterations%2===0?this.props.output0:this.props.output1;}}
@@ -595,19 +595,6 @@ export default function App() {
         ::-webkit-scrollbar-track { background:#fdf8ff; }
         ::-webkit-scrollbar-thumb { background:#e9d5ff; border-radius:999px; }
       `}</style>
-
-      <div style={{
-  position: "fixed",
-  bottom: 10,
-  right: 10,
-  zIndex: 999999,
-  background: "red",
-  color: "white",
-  padding: "4px 8px",
-  fontSize: 12
-}}>
-  NEW BUILD 777
-</div>
 
       {/* ─── HEADER ─────────────────────────────────── */}
       <header style={{
