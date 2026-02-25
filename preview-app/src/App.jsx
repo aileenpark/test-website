@@ -84,7 +84,39 @@ function LiquidEther({
     class Divergence extends ShaderPass{constructor(s){super({material:{vertexShader:fv,fragmentShader:df,uniforms:{boundarySpace:{value:s.boundarySpace},velocity:{value:s.src.texture},px:{value:s.cellScale},dt:{value:s.dt}}},output:s.dst});this.init();}update(args){if(this.uniforms)this.uniforms.velocity.value=args.vel.texture;super.update();}}
     class Poisson extends ShaderPass{constructor(s){super({material:{vertexShader:fv,fragmentShader:pf,uniforms:{boundarySpace:{value:s.boundarySpace},pressure:{value:s.dst_.texture},divergence:{value:s.src.texture},px:{value:s.cellScale}}},output:s.dst,output0:s.dst_,output1:s.dst});this.init();}update(args){const{iterations}=args;for(let i=0;i<iterations;i++){const pi=i%2===0?this.props.output0:this.props.output1,po=i%2===0?this.props.output1:this.props.output0;this.uniforms.pressure.value=pi.texture;this.props.output=po;super.update();}return iterations%2===0?this.props.output0:this.props.output1;}}
     class Pressure extends ShaderPass{constructor(s){super({material:{vertexShader:fv,fragmentShader:rf,uniforms:{boundarySpace:{value:s.boundarySpace},pressure:{value:s.src_p.texture},velocity:{value:s.src_v.texture},px:{value:s.cellScale},dt:{value:s.dt}}},output:s.dst});this.init();}update(args){this.uniforms.velocity.value=args.vel.texture;this.uniforms.pressure.value=args.pressure.texture;super.update();}}
-    class Simulation{constructor(options){this.options={iterations_poisson:32,iterations_viscous:32,mouse_force:20,resolution:0.5,cursor_size:100,viscous:30,isBounce:false,dt:0.014,isViscous:false,BFECC:true,...options};this.fbos={vel_0:null,vel_1:null,vel_viscous0:null,vel_viscous1:null,div:null,pressure_0:null,pressure_1:null};this.fboSize=new THREE.Vector2();this.cellScale=new THREE.Vector2();this.boundarySpace=new THREE.Vector2();this.init();}init(){this.calcSize();this.createAllFBO();this.createShaderPass();}getFloatType(){return/(iPad|iPhone|iPod)/i.test(navigator.userAgent)?THREE.HalfFloatType:THREE.FloatType;}createAllFBO(){const type=this.getFloatType(),opts={type,depthBuffer:false,stencilBuffer:false,minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,wrapS:THREE.ClampToEdgeWrapping,wrapT:THREE.ClampToEdgeWrapping};for(const k in this.fbos)this.fbos[k]=new THREE.WebGLRenderTarget(this.fboSize.x,this.fboSize.y,opts);}createShaderPass(){this.advection=new Advection({cellScale:this.cellScale,fboSize:this.fboSize,dt:this.options.dt,src:this.fbos.vel_0,dst:this.fbos.vel_1});this.externalForce=new ExternalForce({cellScale:this.cellScale,cursor_size:this.options.cursor_size,dst:this.fbos.vel_1});this.viscous=new Viscous({cellScale:this.cellScale,boundarySpace:this.boundarySpace,viscous:this.options.viscous,src:this.fbos.vel_1,dst:this.fbos.vel_viscous1,dst_:this.fbos.vel_viscous0,dt:this.options.dt});this.divergence=new Divergence({cellScale:this.cellScale,boundarySpace:this.boundarySpace,src:this.fbos.vel_viscous0,dst:this.fbos.div,dt:this.options.dt});this.poisson=new Poisson({cellScale:this.cellScale,boundarySpace:this.boundarySpace,src:this.fbos.div,dst:this.fbos.pressure_1,dst_:this.fbos.pressure_0});this.pressure=new Pressure({cellScale:this.cellScale,boundarySpace:this.boundarySpace,src_p:this.fbos.pressure_0,src_v:this.fbos.vel_viscous0,dst:this.fbos.vel_0,dt:this.options.dt});}calcSize(){const w=Math.max(1,Math.round(this.options.resolution*Common.width)),h=Math.max(1,Math.round(this.options.resolution*Common.height));this.cellScale.set(1/w,1/h);this.fboSize.set(w,h);}resize(){this.calcSize();for(const k in this.fbos)this.fbos[k].setSize(this.fboSize.x,this.fboSize.y);}update(){this.boundarySpace.copy(this.options.isBounce?new THREE.Vector2(0,0):this.cellScale);this.advection.update({dt:this.options.dt,isBounce:this.options.isBounce,BFECC:this.options.BFECC});this.externalForce.update({cursor_size:this.options.cursor_size,mouse_force:this.options.mouse_force,cellScale:this.cellScale});let vel=this.fbos.vel_1;if(this.options.isViscous)vel=this.viscous.update({iterations:this.options.iterations_viscous,dt:this.options.dt});this.divergence.update({vel});const pressure=this.poisson.update({iterations:this.options.iterations_poisson});this.pressure.update({vel,pressure});}}
+    class Simulation{
+      constructor(options){
+        this.options={
+          iterations_poisson:32,
+          iterations_viscous:32,
+          mouse_force:20,
+          resolution:0.5,
+          cursor_size:100,
+          viscous:30,
+          isBounce:false,
+          dt:0.014,
+          isViscous:false,
+          BFECC:true,...options};
+          this.fbos={
+            vel_0:null,
+            vel_1:null,
+            vel_viscous0:null,
+            vel_viscous1:null,
+            div:null,
+            pressure_0:null,
+            pressure_1:null};
+            this.fboSize=new THREE.Vector2();
+            this.cellScale=new THREE.Vector2();
+            this.boundarySpace=new THREE.Vector2();
+            this.init();}init(){this.calcSize();
+            this.createAllFBO();
+            this.createShaderPass();
+          }ggetFloatType(){
+            return THREE.HalfFloatType;
+          }
+createAllFBO(){
+            const type=this.getFloatType(),
+            opts={type,depthBuffer:false,stencilBuffer:false,minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,wrapS:THREE.ClampToEdgeWrapping,wrapT:THREE.ClampToEdgeWrapping};for(const k in this.fbos)this.fbos[k]=new THREE.WebGLRenderTarget(this.fboSize.x,this.fboSize.y,opts);}createShaderPass(){this.advection=new Advection({cellScale:this.cellScale,fboSize:this.fboSize,dt:this.options.dt,src:this.fbos.vel_0,dst:this.fbos.vel_1});this.externalForce=new ExternalForce({cellScale:this.cellScale,cursor_size:this.options.cursor_size,dst:this.fbos.vel_1});this.viscous=new Viscous({cellScale:this.cellScale,boundarySpace:this.boundarySpace,viscous:this.options.viscous,src:this.fbos.vel_1,dst:this.fbos.vel_viscous1,dst_:this.fbos.vel_viscous0,dt:this.options.dt});this.divergence=new Divergence({cellScale:this.cellScale,boundarySpace:this.boundarySpace,src:this.fbos.vel_viscous0,dst:this.fbos.div,dt:this.options.dt});this.poisson=new Poisson({cellScale:this.cellScale,boundarySpace:this.boundarySpace,src:this.fbos.div,dst:this.fbos.pressure_1,dst_:this.fbos.pressure_0});this.pressure=new Pressure({cellScale:this.cellScale,boundarySpace:this.boundarySpace,src_p:this.fbos.pressure_0,src_v:this.fbos.vel_viscous0,dst:this.fbos.vel_0,dt:this.options.dt});}calcSize(){const w=Math.max(1,Math.round(this.options.resolution*Common.width)),h=Math.max(1,Math.round(this.options.resolution*Common.height));this.cellScale.set(1/w,1/h);this.fboSize.set(w,h);}resize(){this.calcSize();for(const k in this.fbos)this.fbos[k].setSize(this.fboSize.x,this.fboSize.y);}update(){this.boundarySpace.copy(this.options.isBounce?new THREE.Vector2(0,0):this.cellScale);this.advection.update({dt:this.options.dt,isBounce:this.options.isBounce,BFECC:this.options.BFECC});this.externalForce.update({cursor_size:this.options.cursor_size,mouse_force:this.options.mouse_force,cellScale:this.cellScale});let vel=this.fbos.vel_1;if(this.options.isViscous)vel=this.viscous.update({iterations:this.options.iterations_viscous,dt:this.options.dt});this.divergence.update({vel});const pressure=this.poisson.update({iterations:this.options.iterations_poisson});this.pressure.update({vel,pressure});}}
     class Output{
       constructor(){t
       his.simulation=new Simulation({
