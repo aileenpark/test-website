@@ -6,7 +6,7 @@ import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeom
 /* ══════════════════════════════════════════════════════
    LIQUID ETHER ENGINE
 ══════════════════════════════════════════════════════ */
-function LiquidEther({
+/*function LiquidEther({
   colors = ["#a855f7","#ec4899","#f9a8d4"],
   mouseForce = 20, cursorSize = 100, isViscous = false, viscous = 30,
   iterationsViscous = 32, iterationsPoisson = 32, dt = 0.014, BFECC = true,
@@ -164,12 +164,12 @@ createAllFBO(){
   }, [colors,autoDemo,autoSpeed,autoIntensity,takeoverDuration,autoResumeDelay,autoRampDuration]);
 
   return <div ref={mountRef} className={`w-full h-full relative overflow-hidden pointer-events-none touch-none ${className}`} style={style}/>;
-}
+}*/
 
 /* ══════════════════════════════════════════════════════
    WORK CARD
 ══════════════════════════════════════════════════════ */
-function WorkCard({ tag, title, year, accent, index }) {
+/*function WorkCard({ tag, title, year, accent, index }) {
   const [hov, setHov] = useState(false);
   return (
     <div
@@ -217,12 +217,12 @@ function WorkCard({ tag, title, year, accent, index }) {
       </div>
     </div>
   );
-}
+}*/
 
 /* ══════════════════════════════════════════════════════
    NP LOGO  — actual uploaded SVG
 ══════════════════════════════════════════════════════ */
-function NPLogo({ color = "#111", size = 36 }) {
+/*function NPLogo({ color = "#111", size = 36 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -232,6 +232,7 @@ function NPLogo({ color = "#111", size = 36 }) {
     </svg>
   );
 }
+*/
 
 /* ══════════════════════════════════════════════════════
    HOLOGRAPHIC CRYSTAL CUBE
@@ -241,7 +242,7 @@ function NPLogo({ color = "#111", size = 36 }) {
    · Auto-rotation + smooth mouse tilt
    · Inner octahedron for refraction drama
 ══════════════════════════════════════════════════════ */
-function GlassCube() {
+/*function GlassCube() {
   const mountRef = useRef(null);
 
   useEffect(() => {
@@ -250,7 +251,7 @@ function GlassCube() {
     const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
     let mounted = true;
 
-    /* ── Renderer ────────────────────────────────────── */
+    // ── Renderer ────────────────────────────────────── 
     const renderer = new THREE.WebGLRenderer({ antialias: !isMobile, alpha: true });
     renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
     renderer.setSize(container.offsetWidth, container.offsetHeight);
@@ -262,16 +263,16 @@ function GlassCube() {
     });
     container.appendChild(renderer.domElement);
 
-    /* ── Scene & Camera ──────────────────────────────── */
+    // ── Scene & Camera ──────────────────────────────── 
     const scene  = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
     camera.position.z = 5;
 
-    /* ── Environment map ─────────────────────────────────
-       Builds a Float32 HDR-quality synthetic env map right
-       away so the crystal renders on the first frame.
-       RGBELoader then loads a real studio HDR in the
-       background and swaps it in when ready.            */
+    // ── Environment map ─────────────────────────────────
+    //   Builds a Float32 HDR-quality synthetic env map right
+    //   away so the crystal renders on the first frame.
+    //   RGBELoader then loads a real studio HDR in the
+    //   background and swaps it in when ready.            
     const pmrem = new THREE.PMREMGenerator(renderer);
     pmrem.compileEquirectangularShader();
 
@@ -325,7 +326,7 @@ function GlassCube() {
       })
       .catch(() => { if (mounted) pmrem.dispose(); });
 
-    /* ── Main crystal cube ───────────────────────────── */
+    // ── Main crystal cube ───────────────────────────── 
     // RoundedBoxGeometry(width, height, depth, segments, radius)
     const cubeGeo = new RoundedBoxGeometry(2, 2, 2, 8, 0.22);
     const cubeMat = new THREE.MeshPhysicalMaterial({
@@ -349,10 +350,10 @@ function GlassCube() {
     const cube = new THREE.Mesh(cubeGeo, cubeMat);
     scene.add(cube);
 
-    /* ── Inner geometry — refraction emphasis ────────────
-       A slightly subdivided octahedron sitting inside the
-       cube. Different IOR / iridescence settings mean it
-       bends light differently and amplifies the rainbow.  */
+    // ── Inner geometry — refraction emphasis ────────────
+    //   A slightly subdivided octahedron sitting inside the
+    //   cube. Different IOR / iridescence settings mean it
+    //   bends light differently and amplifies the rainbow.  
     const innerGeo = new THREE.OctahedronGeometry(0.52, 2);
     const innerMat = new THREE.MeshPhysicalMaterial({
       color:                     0xddc8ff,
@@ -373,7 +374,7 @@ function GlassCube() {
     const inner = new THREE.Mesh(innerGeo, innerMat);
     scene.add(inner);
 
-    /* ── Rainbow PointLights ─────────────────────────── */
+    // ── Rainbow PointLights ─────────────────────────── 
     scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
     const LIGHT_DEFS = [
@@ -390,12 +391,12 @@ function GlassCube() {
       return l;
     });
 
-    /* ── Mouse — velocity-based rotation ───────────────────
-       Per-frame mouse delta (px) → angular velocity impulse.
-       FRICTION decays the velocity every frame → inertia.
-       autoBlend fades between user control and idle auto-spin:
-         · 1 = full auto-spin  (initial, or mouse outside window)
-         · 0 = full user control (mouse actively inside window)  */
+    // ── Mouse — velocity-based rotation ───────────────────
+     //  Per-frame mouse delta (px) → angular velocity impulse.
+    //  FRICTION decays the velocity every frame → inertia.
+     //  autoBlend fades between user control and idle auto-spin:
+     //    · 1 = full auto-spin  (initial, or mouse outside window)
+     //    · 0 = full user control (mouse actively inside window)  
     let mouseX = 0, mouseY = 0;
     let prevMouseX = 0, prevMouseY = 0;
     let velX = 0, velY = 0;   // angular velocity (rad / frame)
@@ -414,7 +415,7 @@ function GlassCube() {
     window.addEventListener('mousemove',    onMove);
     document.addEventListener('mouseleave', onLeave);
 
-    /* ── Animation loop ──────────────────────────────── */
+    // ── Animation loop ──────────────────────────────── 
     let t = 0, rafId;
 
     const animate = () => {
@@ -477,7 +478,7 @@ function GlassCube() {
       renderer.render(scene, camera);
     };
     
-    /* ── 2. 가시성 관찰자 (성능 최적화용) ── */
+    // ── 2. 가시성 관찰자 (성능 최적화용) ── 
     const obs = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
         cancelAnimationFrame(rafId); 
@@ -488,13 +489,13 @@ function GlassCube() {
     }, { threshold: 0.01 });
     obs.observe(container);
 
-    /* ── Resize ──────────────────────────────────────── */
+    // ── Resize ──────────────────────────────────────── 
     const ro = new ResizeObserver(() => {
       renderer.setSize(container.offsetWidth, container.offsetHeight);
     });
     ro.observe(container);
 
-    /* ── Cleanup ─────────────────────────────────────── */
+    // ── Cleanup ─────────────────────────────────────── 
     return () => {
       mounted = false;
       cancelAnimationFrame(rafId);
@@ -523,7 +524,7 @@ function GlassCube() {
       }}
     />
   );
-}
+}*/
 
 /* ══════════════════════════════════════════════════════
    CUSTOM CURSOR
@@ -580,361 +581,8 @@ export default function App() {
   }, []);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#fdf8ff", fontFamily: "'Space Grotesk',sans-serif" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
-        @media (hover: hover) and (pointer: fine) {
-          *, *::before, *::after { cursor: none !important; }
-        }
-        *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
-        html { scroll-behavior: smooth; }
-
-        /* Marquee */
-        @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-        .marquee-inner { display:flex; animation:marquee 22s linear infinite; will-change:transform; }
-        .marquee-inner:hover { animation-play-state:paused; }
-
-        /* Entrance */
-        @keyframes slideUp { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
-        .su1 { animation:slideUp .95s cubic-bezier(.22,1,.36,1) .1s both; }
-        .su2 { animation:slideUp .95s cubic-bezier(.22,1,.36,1) .3s both; }
-        .su3 { animation:slideUp .95s cubic-bezier(.22,1,.36,1) .48s both; }
-
-        /* Nav links — Figma: Inter Medium 20px, line-height 140%, letter-spacing 0%, #121212 */
-        .navlink {
-          font-family: 'Inter', sans-serif;
-          font-weight: 500;
-          font-size: 20px;
-          line-height: 1.4;
-          letter-spacing: 0;
-          color: #121212;
-          text-decoration: none;
-          position: relative;
-          padding-bottom: 3px;
-        }
-        .navlink::after { content:''; position:absolute; bottom:0; left:0; width:0; height:1.5px; background:#a855f7; transition:width .3s cubic-bezier(.22,1,.36,1); }
-        .navlink:hover::after { width:100%; }
-
-        /* Responsive */
-        @media (max-width:767px) {
-          .desktop-nav { display:none!important; }
-          .mob-btn { display:flex!important; }
-        }
-        @media (min-width:768px) {
-          .mob-btn { display:none!important; }
-          .mob-overlay { display:none!important; }
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width:5px; }
-        ::-webkit-scrollbar-track { background:#fdf8ff; }
-        ::-webkit-scrollbar-thumb { background:#e9d5ff; border-radius:999px; }
-      `}</style>
-
-      {/* ─── HEADER ─────────────────────────────────── */}
-      <header style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-        height: 64,
-        background: scrolled ? "rgba(253,248,255,.82)" : "transparent",
-        backdropFilter: scrolled ? "blur(20px)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(168,85,247,.1)" : "1px solid transparent",
-        transition: "background .4s, backdrop-filter .4s, border-color .4s",
-      }}>
-        <div style={{
-          maxWidth: 1440, margin: "0 auto",
-          padding: "0 clamp(20px,5vw,60px)",
-          height: "100%",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-        }}>
-          {/* ── Logo → "Nayun Park" animated transition ── */}
-          <a href="#" style={{
-            textDecoration: "none", lineHeight: 1,
-            display: "block",
-            position: "relative",
-            // width morphs from logo size → text width naturally
-            height: 32,
-            // min-width prevents layout jump during transition
-            minWidth: 32,
-          }}>
-            {/* SVG logo — fades + scales out as user scrolls */}
-            <span style={{
-              position: "absolute", top: "50%", left: 0,
-              transform: `translateY(-50%) scale(${1 - logoProgress * 0.15})`,
-              opacity: 1 - logoProgress,
-              transition: "none", // driven by scroll directly (smooth already)
-              transformOrigin: "left center",
-              pointerEvents: logoProgress > 0.5 ? "none" : "auto",
-              display: "flex", alignItems: "center",
-            }}>
-              <NPLogo color="#121212" size={32} />
-            </span>
-
-            {/* "Nayun Park" text — fades + slides in from below */}
-            <span style={{
-              position: "absolute", top: "50%", left: 0,
-              transform: `translateY(calc(-50% + ${(1 - logoProgress) * 10}px))`,
-              opacity: logoProgress,
-              pointerEvents: logoProgress < 0.5 ? "none" : "auto",
-              whiteSpace: "nowrap",
-              // Figma spec: Helvetica Neue Bold 24px, line-height 130%, #121212
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontWeight: 700,
-              fontSize: 24,
-              lineHeight: 1.3,
-              letterSpacing: 0,
-              color: "#121212",
-            }}>
-              Nayun Park
-            </span>
-
-            {/* Invisible spacer so the <a> keeps enough width for the text */}
-            <span style={{
-              visibility: "hidden", whiteSpace: "nowrap",
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontWeight: 700, fontSize: 24, lineHeight: 1.3,
-            }}>
-              Nayun Park
-            </span>
-          </a>
-
-          {/* Desktop nav */}
-          <nav className="desktop-nav" style={{ display: "flex", gap: "clamp(28px,5vw,68px)" }}>
-            {["Works","About","Résumé"].map(l => (
-              l === "Résumé"
-                ? <a key={l} href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="navlink">{l}</a>
-                : <a key={l} href="#" className="navlink" onClick={e => { e.preventDefault(); setUnderConstruction(true); }}>{l}</a>
-            ))}
-          </nav>
-
-          {/* Mobile hamburger */}
-          <button
-            className="mob-btn"
-            onClick={() => setMenuOpen(o => !o)}
-            style={{
-              display:"none", alignItems:"center", justifyContent:"center",
-              background:"none", border:"none", cursor:"pointer", padding:8, zIndex:200,
-            }}
-          >
-            <svg width="22" height="16" viewBox="0 0 22 16">
-              <rect y="0" width="22" height="2" rx="1" fill="#111"
-                style={{ transform: menuOpen ? "translateY(7px) rotate(45deg)" : "none", transformOrigin:"center", transition:"all .25s" }} />
-              <rect y="7" width="22" height="2" rx="1" fill="#111"
-                style={{ opacity: menuOpen ? 0 : 1, transition:"opacity .2s" }} />
-              <rect y="14" width="22" height="2" rx="1" fill="#111"
-                style={{ transform: menuOpen ? "translateY(-7px) rotate(-45deg)" : "none", transformOrigin:"center", transition:"all .25s" }} />
-            </svg>
-          </button>
-        </div>
-      </header>
-
-      {/* ─── MOBILE OVERLAY ─────────────────────────── */}
-      <div
-        className="mob-overlay"
-        style={{
-          position: "fixed", inset: 0, zIndex: 90,
-          background: "rgba(253,248,255,.97)", backdropFilter: "blur(28px)",
-          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 44,
-          opacity: menuOpen ? 1 : 0, visibility: menuOpen ? "visible" : "hidden",
-          transition: "opacity .3s, visibility .3s",
-        }}
-      >
-        {["Works","About","Résumé"].map(l => (
-          <a
-            key={l}
-            href={l === "Résumé" ? "/resume.pdf" : "#"}
-            target={l === "Résumé" ? "_blank" : undefined}
-            rel={l === "Résumé" ? "noopener noreferrer" : undefined}
-            onClick={e => {
-              if (l !== "Résumé") { e.preventDefault(); setUnderConstruction(true); }
-              setMenuOpen(false);
-            }}
-            style={{
-              fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700,
-              fontSize: 40, letterSpacing: "-.025em", color: "#111", textDecoration: "none",
-            }}
-          >{l}</a>
-        ))}
-      </div>
-
-      {/* ─── UNDER CONSTRUCTION OVERLAY ─────────────── */}
-      {underConstruction && (
-        <div
-          onClick={() => setUnderConstruction(false)}
-          style={{
-            position: "fixed", inset: 0, zIndex: 500,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            background: "rgba(10,10,10,.45)", backdropFilter: "blur(8px)",
-          }}
-        >
-          <div
-            onClick={e => e.stopPropagation()}
-            style={{
-              background: "#fff", borderRadius: 16,
-              padding: "clamp(32px,5vw,52px) clamp(28px,5vw,52px)",
-              boxShadow: "0 24px 80px rgba(0,0,0,.18)",
-              textAlign: "center", maxWidth: 420, width: "90%",
-            }}
-          >
-            <p style={{
-              fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700,
-              fontSize: "clamp(18px,2.5vw,24px)", color: "#121212",
-              letterSpacing: "-.02em", lineHeight: 1.4,
-            }}>
-              This page is still under construction. 🛠️
-            </p>
-            <button
-              onClick={() => setUnderConstruction(false)}
-              style={{
-                marginTop: 24, fontFamily: "'Space Mono',monospace",
-                fontSize: 11, letterSpacing: ".08em", color: "#a855f7",
-                background: "none", border: "1px solid rgba(168,85,247,.35)",
-                borderRadius: 999, padding: "8px 22px", cursor: "pointer",
-              }}
-            >Close</button>
-          </div>
-        </div>
-      )}
-
-      {/* ─── HERO ───────────────────────────────────── */}
-      <section style={{
-        position: "relative",
-        minHeight: "100vh",
-        background: "#ffffff",
-        overflow: "hidden",
-        display: "flex", flexDirection: "column", justifyContent: "flex-end",
-      }}>
-        {/* Fluid layer — fills entire hero */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "all" }}>
-          <LiquidEther
-            {...fluidProps}
-            colors={["#a855f7","#ec4899","#f9a8d4"]}
-            style={{ width: "100%", height: "100%" }}
-          />
-        </div>
-
-        {/* Bottom gradient so text reads cleanly */}
-        <div style={{
-          position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 1,
-          height: "55%", pointerEvents: "none",
-          background: "linear-gradient(to top, rgba(253,248,255,.72) 0%, transparent 100%)",
-        }} />
-
-        {/* ── Glass Cube ── */}
-        <GlassCube />
-
-        {/* ── DESIGNED TO FUNCTION — SVG, 뷰포트 세로 중앙 (헤더 64px 보정) ── */}
-        <div className="su1" style={{
-          position: "absolute",
-          top: "calc(50% + 32px)",
-          left: 0,
-          right: 0,
-          transform: "translateY(-50%)",
-          zIndex: 2,
-          pointerEvents: "none",
-          overflow: "hidden",
-        }}>
-            {/* viewBox="0 0 1920 103" — preserveAspectRatio로 가로 100% 맞춤 */}
-            <svg
-              viewBox="0 0 1920 103"
-              xmlns="http://www.w3.org/2000/svg"
-              style={{
-                width: "100%",
-                height: "auto",
-                display: "block",
-              }}
-              aria-label="DESIGNED TO FUNCTION"
-            >
-              <path d="M1825.67 2.33203H1850.08L1896.69 68.0598H1897.01V2.33203H1920V100.306H1895.44L1848.98 34.7156H1848.67V100.306H1825.67V2.33203Z" fill="#121212"/>
-              <path d="M1723.63 51.7315C1723.63 55.848 1724.15 59.8731 1725.19 63.8067C1726.34 67.6488 1728.11 71.125 1730.51 74.2353C1732.91 77.3456 1736.04 79.8613 1739.9 81.7824C1743.76 83.6119 1748.45 84.5267 1753.98 84.5267C1759.5 84.5267 1764.2 83.6119 1768.06 81.7824C1771.91 79.8613 1775.04 77.3456 1777.44 74.2353C1779.84 71.125 1781.56 67.6488 1782.6 63.8067C1783.75 59.8731 1784.32 55.848 1784.32 51.7315C1784.32 47.4319 1783.75 43.2696 1782.6 39.2445C1781.56 35.2195 1779.84 31.6518 1777.44 28.5415C1775.04 25.3397 1771.91 22.824 1768.06 20.9945C1764.2 19.0734 1759.5 18.1129 1753.98 18.1129C1748.45 18.1129 1743.76 19.0734 1739.9 20.9945C1736.04 22.824 1732.91 25.3397 1730.51 28.5415C1728.11 31.6518 1726.34 35.2195 1725.19 39.2445C1724.15 43.2696 1723.63 47.4319 1723.63 51.7315ZM1699.07 51.7315C1699.07 44.4131 1700.32 37.6437 1702.82 31.4231C1705.33 25.111 1708.93 19.6223 1713.62 14.9568C1718.31 10.2914 1724.05 6.63223 1730.83 3.97934C1737.71 1.32645 1745.43 0 1753.98 0C1762.63 0 1770.35 1.32645 1777.13 3.97934C1783.91 6.63223 1789.64 10.2914 1794.34 14.9568C1799.03 19.6223 1802.63 25.111 1805.13 31.4231C1807.63 37.6437 1808.88 44.4131 1808.88 51.7315C1808.88 58.8668 1807.63 65.5448 1805.13 71.7654C1802.63 77.8945 1799.03 83.246 1794.34 87.82C1789.64 92.3939 1783.91 96.0074 1777.13 98.6603C1770.35 101.222 1762.63 102.502 1753.98 102.502C1745.43 102.502 1737.71 101.222 1730.83 98.6603C1724.05 96.0074 1718.31 92.3939 1713.62 87.82C1708.93 83.246 1705.33 77.8945 1702.82 71.7654C1700.32 65.5448 1699.07 58.8668 1699.07 51.7315Z" fill="#121212"/>
-              <path d="M1657.79 2.33203H1682.34V100.306H1657.79V2.33203Z" fill="#121212"/>
-              <path d="M1586.87 20.4449H1553.4V2.33203H1644.91V20.4449H1611.43V100.306H1586.87V20.4449Z" fill="#121212"/>
-              <path d="M1520.67 35.2652C1520.25 32.7953 1519.31 30.554 1517.85 28.5415C1516.39 26.4375 1514.57 24.6079 1512.38 23.0527C1510.19 21.4976 1507.68 20.3084 1504.87 19.4851C1502.16 18.5703 1499.29 18.1129 1496.26 18.1129C1490.74 18.1129 1486.04 19.0734 1482.19 20.9945C1478.33 22.824 1475.2 25.3397 1472.8 28.5415C1470.4 31.6518 1468.63 35.2195 1467.48 39.2445C1466.44 43.2696 1465.92 47.4319 1465.92 51.7315C1465.92 55.848 1466.44 59.8731 1467.48 63.8067C1468.63 67.6488 1470.4 71.125 1472.8 74.2353C1475.2 77.3456 1478.33 79.8613 1482.19 81.7824C1486.04 83.6119 1490.74 84.5267 1496.26 84.5267C1503.77 84.5267 1509.61 82.5142 1513.78 78.4891C1518.06 74.464 1520.67 69.1582 1521.61 62.5717H1545.38C1544.76 68.7008 1543.14 74.2353 1540.53 79.1752C1537.93 84.1151 1534.49 88.3231 1530.21 91.7993C1525.93 95.2755 1520.93 97.9284 1515.19 99.758C1509.46 101.588 1503.15 102.502 1496.26 102.502C1487.71 102.502 1480 101.222 1473.11 98.6603C1466.33 96.0074 1460.6 92.3939 1455.91 87.82C1451.21 83.246 1447.61 77.8945 1445.11 71.7654C1442.61 65.5448 1441.36 58.8668 1441.36 51.7315C1441.36 44.4131 1442.61 37.6437 1445.11 31.4231C1447.61 25.111 1451.21 19.6223 1455.91 14.9568C1460.6 10.2914 1466.33 6.63223 1473.11 3.97934C1480 1.32645 1487.71 0 1496.26 0C1502.42 0 1508.2 0.777571 1513.63 2.33271C1519.15 3.88786 1524.06 6.17484 1528.33 9.19365C1532.71 12.121 1536.31 15.7801 1539.13 20.1711C1541.94 24.5621 1543.71 29.5935 1544.44 35.2652H1520.67Z" fill="#121212"/>
-              <path d="M1330.26 2.33203H1354.66L1401.28 68.0598H1401.59V2.33203H1424.59V100.306H1400.03L1353.57 34.7156H1353.26V100.306H1330.26V2.33203Z" fill="#121212"/>
-              <path d="M1309.11 63.2572C1309.11 76.5216 1304.89 86.4014 1296.44 92.8964C1287.99 99.2999 1276.31 102.502 1261.4 102.502C1246.28 102.502 1234.54 99.2999 1226.2 92.8964C1217.96 86.4928 1213.84 76.6131 1213.84 63.2572V2.33203H1238.4V63.2572C1238.4 65.91 1238.66 68.5172 1239.19 71.0786C1239.71 73.64 1240.8 75.927 1242.47 77.9396C1244.14 79.8606 1246.43 81.4615 1249.35 82.7422C1252.38 83.9314 1256.39 84.526 1261.4 84.526C1270.16 84.526 1276.21 82.8337 1279.54 79.449C1282.88 75.9727 1284.55 70.5755 1284.55 63.2572V2.33203H1309.11V63.2572Z" fill="#121212"/>
-              <path d="M1121.59 2.33203H1200.12V20.4449H1146.15V43.086H1192.92V59.8267H1146.15V100.306H1121.59V2.33203Z" fill="#121212"/>
-              <path d="M976.005 51.7315C976.005 55.848 976.526 59.8731 977.569 63.8067C978.716 67.6488 980.489 71.125 982.888 74.2353C985.286 77.3456 988.415 79.8613 992.273 81.7824C996.132 83.6119 1000.82 84.5267 1006.35 84.5267C1011.88 84.5267 1016.57 83.6119 1020.43 81.7824C1024.29 79.8613 1027.42 77.3456 1029.82 74.2353C1032.22 71.125 1033.94 67.6488 1034.98 63.8067C1036.13 59.8731 1036.7 55.848 1036.7 51.7315C1036.7 47.4319 1036.13 43.2696 1034.98 39.2445C1033.94 35.2195 1032.22 31.6518 1029.82 28.5415C1027.42 25.3397 1024.29 22.824 1020.43 20.9945C1016.57 19.0734 1011.88 18.1129 1006.35 18.1129C1000.82 18.1129 996.132 19.0734 992.273 20.9945C988.415 22.824 985.286 25.3397 982.888 28.5415C980.489 31.6518 978.716 35.2195 977.569 39.2445C976.526 43.2696 976.005 47.4319 976.005 51.7315ZM951.445 51.7315C951.445 44.4131 952.697 37.6437 955.2 31.4231C957.702 25.111 961.3 19.6223 965.993 14.9568C970.686 10.2914 976.422 6.63223 983.201 3.97934C990.083 1.32645 997.801 0 1006.35 0C1015.01 0 1022.73 1.32645 1029.5 3.97934C1036.28 6.63223 1042.02 10.2914 1046.71 14.9568C1051.4 19.6223 1055 25.111 1057.5 31.4231C1060.01 37.6437 1061.26 44.4131 1061.26 51.7315C1061.26 58.8668 1060.01 65.5448 1057.5 71.7654C1055 77.8945 1051.4 83.246 1046.71 87.82C1042.02 92.3939 1036.28 96.0074 1029.5 98.6603C1022.73 101.222 1015.01 102.502 1006.35 102.502C997.801 102.502 990.083 101.222 983.201 98.6603C976.422 96.0074 970.686 92.3939 965.993 87.82C961.3 83.246 957.702 77.8945 955.2 71.7654C952.697 65.5448 951.445 58.8668 951.445 51.7315Z" fill="#121212"/>
-              <path d="M885.382 20.4449H851.906V2.33203H943.417V20.4449H909.942V100.306H885.382V20.4449Z" fill="#121212"/>
-              <path d="M725.743 82.1933H747.643C751.189 82.1933 754.63 81.6902 757.967 80.6839C761.305 79.6777 764.277 78.031 766.884 75.744C769.491 73.3656 771.577 70.301 773.141 66.5504C774.705 62.7998 775.488 58.2258 775.488 52.8285C775.488 47.8887 774.914 43.4519 773.767 39.5183C772.724 35.4932 770.951 32.0628 768.448 29.2269C765.945 26.3911 762.608 24.2413 758.437 22.7776C754.37 21.2225 749.312 20.4449 743.263 20.4449H725.743V82.1933ZM701.184 2.33203H749.364C756.56 2.33203 763.234 3.3383 769.387 5.35085C775.644 7.36339 781.015 10.3822 785.499 14.4073C790.088 18.4324 793.633 23.4637 796.136 29.5013C798.743 35.539 800.047 42.6286 800.047 50.7702C800.047 57.9056 799.004 64.4921 796.918 70.5297C794.833 76.5674 791.652 81.7817 787.376 86.1727C783.205 90.5637 777.938 94.0399 771.577 96.6013C765.32 99.0712 757.915 100.306 749.364 100.306H701.184V2.33203Z" fill="#121212"/>
-              <path d="M599.748 2.33203H683.281V20.4449H624.307V41.4394H678.432V58.1801H624.307V82.1933H684.533V100.306H599.748V2.33203Z" fill="#121212"/>
-              <path d="M483.801 2.33203H508.204L554.82 68.0598H555.133V2.33203H578.128V100.306H553.568L507.109 34.7156H506.796V100.306H483.801V2.33203Z" fill="#121212"/>
-              <path d="M445.821 89.1922C441.441 94.132 436.591 97.6083 431.273 99.6208C425.954 101.542 420.584 102.502 415.161 102.502C406.609 102.502 398.892 101.222 392.009 98.6603C385.23 96.0074 379.495 92.3939 374.802 87.82C370.109 83.246 366.511 77.8945 364.008 71.7654C361.505 65.5448 360.254 58.8668 360.254 51.7315C360.254 44.4131 361.505 37.6437 364.008 31.4231C366.511 25.111 370.109 19.6223 374.802 14.9568C379.495 10.2914 385.23 6.63223 392.009 3.97934C398.892 1.32645 406.609 0 415.161 0C420.896 0 426.424 0.777571 431.742 2.33271C437.165 3.79638 442.014 5.99188 446.29 8.91922C450.67 11.8465 454.268 15.46 457.084 19.7595C459.899 24.059 461.62 28.9989 462.246 34.5791H438.781C437.321 29.0904 434.506 24.9738 430.334 22.2294C426.163 19.4851 421.105 18.1129 415.161 18.1129C409.633 18.1129 404.941 19.0734 401.082 20.9945C397.223 22.824 394.095 25.3397 391.696 28.5415C389.298 31.6518 387.525 35.2195 386.378 39.2445C385.335 43.2696 384.813 47.4319 384.813 51.7315C384.813 55.848 385.335 59.8731 386.378 63.8067C387.525 67.6488 389.298 71.125 391.696 74.2353C394.095 77.3456 397.223 79.8613 401.082 81.7824C404.941 83.6119 409.633 84.5267 415.161 84.5267C423.295 84.5267 429.552 82.7429 433.932 79.1752C438.416 75.516 441.024 70.256 441.754 63.395H417.038V47.3405H463.967V100.307H448.324L445.821 89.1922Z" fill="#121212"/>
-              <path d="M318.971 2.33203H343.53V100.306H318.971V2.33203Z" fill="#121212"/>
-              <path d="M234.119 67.786C234.119 71.0793 234.797 73.8694 236.153 76.1564C237.509 78.4434 239.281 80.3187 241.471 81.7824C243.766 83.1545 246.425 84.2066 249.449 84.9384C252.474 85.5787 255.602 85.8989 258.835 85.8989C261.025 85.8989 263.372 85.7617 265.874 85.4873C268.377 85.1213 270.724 84.481 272.914 83.5662C275.104 82.6514 276.929 81.4164 278.389 79.8613C279.849 78.2147 280.579 76.1564 280.579 73.6865C280.579 71.0336 279.588 68.8838 277.607 67.2372C275.729 65.5905 273.227 64.2184 270.098 63.1206C266.969 62.0229 263.424 61.0623 259.461 60.239C255.498 59.4157 251.483 58.5009 247.416 57.4946C243.244 56.5798 239.177 55.4821 235.214 54.2014C231.251 52.8292 227.706 51.0911 224.577 48.9871C221.448 46.8831 218.893 44.2759 216.912 41.1656C215.035 37.9638 214.096 34.1217 214.096 29.6392C214.096 24.6079 215.296 20.2626 217.694 16.6035C220.197 12.8528 223.43 9.74253 227.393 7.27259C231.356 4.80265 235.84 2.97307 240.846 1.78384C245.851 0.594612 250.857 0 255.863 0C261.703 0 267.282 0.594612 272.601 1.78384C278.024 2.88159 282.821 4.71117 286.992 7.27259C291.164 9.834 294.449 13.1273 296.847 17.1523C299.35 21.0859 300.602 25.8886 300.602 31.5603H276.824C276.616 28.633 275.886 26.2088 274.634 24.2877C273.487 22.3666 271.923 20.8572 269.942 19.7595C267.96 18.6617 265.666 17.8842 263.059 17.4268C260.556 16.9694 257.792 16.7407 254.768 16.7407C252.786 16.7407 250.805 16.9236 248.824 17.2896C246.842 17.6555 245.017 18.2958 243.349 19.2106C241.784 20.1254 240.481 21.2689 239.438 22.6411C238.395 24.0133 237.874 25.7514 237.874 27.8554C237.874 29.7765 238.291 31.3316 239.125 32.5208C239.959 33.7101 241.576 34.8078 243.974 35.8141C246.477 36.8204 249.866 37.8266 254.142 38.8329C258.522 39.8392 264.206 41.1199 271.193 42.675C273.279 43.0409 276.147 43.727 279.797 44.7333C283.551 45.6481 287.253 47.1575 290.903 49.2615C294.553 51.3655 297.682 54.2014 300.289 57.7691C303 61.2453 304.356 65.7278 304.356 71.2165C304.356 75.699 303.365 79.8613 301.384 83.7034C299.402 87.5455 296.43 90.8845 292.467 93.7204C288.609 96.4648 283.76 98.6145 277.919 100.17C272.184 101.725 265.509 102.502 257.897 102.502C251.744 102.502 245.747 101.816 239.907 100.444C234.171 99.1634 229.061 97.1051 224.577 94.2693C220.197 91.4334 216.703 87.82 214.096 83.429C211.489 79.038 210.238 73.8237 210.342 67.786H234.119Z" fill="#121212"/>
-              <path d="M115.947 2.33203H199.481V20.4449H140.507V41.4394H194.631V58.1801H140.507V82.1933H200.732V100.306H115.947V2.33203Z" fill="#121212"/>
-              <path d="M24.5594 82.1933H46.4595C50.0053 82.1933 53.4467 81.6902 56.7839 80.6839C60.1211 79.6777 63.0932 78.031 65.7004 75.744C68.3075 73.3656 70.3933 70.301 71.9575 66.5504C73.5218 62.7998 74.304 58.2258 74.304 52.8285C74.304 47.8887 73.7304 43.4519 72.5833 39.5183C71.5404 35.4932 69.7675 32.0628 67.2647 29.2269C64.7618 26.3911 61.4246 24.2413 57.2532 22.7776C53.186 21.2225 48.1281 20.4449 42.0795 20.4449H24.5594V82.1933ZM0 2.33203H48.1803C55.376 2.33203 62.0503 3.3383 68.2032 5.35085C74.4604 7.36339 79.8312 10.3822 84.3155 14.4073C88.9041 18.4324 92.4498 23.4637 94.9527 29.5013C97.5598 35.539 98.8634 42.6286 98.8634 50.7702C98.8634 57.9056 97.8206 64.4921 95.7348 70.5297C93.6491 76.5674 90.4684 81.7817 86.1926 86.1727C82.0212 90.5637 76.7547 94.0399 70.3933 96.6013C64.1361 99.0712 56.7317 100.306 48.1803 100.306H0V2.33203Z" fill="#121212"/>
-            </svg>
-          </div>
-
-        {/* Content at bottom */}
-        <div style={{
-          position: "relative", zIndex: 2,
-          width: "100%",
-          paddingBottom: "clamp(52px,8vh,88px)",
-          display: "flex", flexDirection: "column", alignItems: "center",
-        }}>
-
-          {/* ── Intro copy — Apercu Mono Pro Regular 52px, 140%, -4%, #121212 ── */}
-          <div className="su2" style={{ padding: "0 clamp(20px,5vw,60px)", width: "100%" }}>
-            <p style={{
-              fontFamily: "'Apercu Mono Pro', 'Courier New', 'Courier', monospace",
-              fontWeight: 400,
-              fontSize: "clamp(20px, 4.2vw, 52px)",
-              lineHeight: 1.4,
-              letterSpacing: "-0.04em",
-              color: "#121212",
-              maxWidth: "none",
-            }}>
-              I'm Nayun Park<br />
-              — A product designer connects<br />
-              systems, stories, and creative energy.
-            </p>
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="su3" style={{
-          position: "absolute", right: "clamp(20px,4vw,56px)", bottom: 32,
-          zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
-        }}>
-          <span style={{
-            fontFamily: "'Space Mono',monospace", fontSize: 9,
-            letterSpacing: ".18em", color: "rgba(10,10,10,.35)",
-            writingMode: "vertical-rl", textTransform: "uppercase",
-          }}>scroll</span>
-          <div style={{
-            width: 1, height: 44,
-            background: "linear-gradient(to bottom, rgba(168,85,247,.5), transparent)",
-          }} />
-        </div>
-      </section>
-
-      {/* ─── FOOTER ─────────────────────────────────── */}
-      <footer style={{
-        background:"#0a0a0a", borderTop:"1px solid rgba(255,255,255,.06)",
-        padding:"clamp(20px,3vh,32px) clamp(20px,5vw,60px)",
-      }}>
-        <div style={{
-          maxWidth:1440, margin:"0 auto",
-          display:"flex", flexWrap:"wrap",
-          alignItems:"center", justifyContent:"space-between", gap:16,
-        }}>
-          <NPLogo color="rgba(255,255,255,.4)" size={26} />
-          <p style={{ fontFamily:"'Space Mono',monospace", fontSize:10, color:"rgba(255,255,255,.28)", letterSpacing:".06em" }}>
-            © 2025 Nayun Park — All rights reserved
-          </p>
-          <div style={{ display:"flex", gap:18 }}>
-            {["LinkedIn","Behance","Email"].map(s => (
-              <a key={s} href="#" style={{
-                fontFamily:"'Space Mono',monospace", fontSize:10,
-                color:"rgba(255,255,255,.32)", textDecoration:"none", letterSpacing:".07em",
-                transition:"color .2s",
-              }}
-              onMouseEnter={e=>e.currentTarget.style.color="#a855f7"}
-              onMouseLeave={e=>e.currentTarget.style.color="rgba(255,255,255,.32)"}>{s}</a>
-            ))}
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
+  <div style={{ padding: 40 }}>
+    MOBILE TEST
+  </div>
+);
 }
