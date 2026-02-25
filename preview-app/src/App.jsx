@@ -536,6 +536,9 @@ const isFinePointer = typeof window !== 'undefined' &&
   window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 export default function App() {
+  const isMobile =
+  typeof window !== "undefined" &&
+  window.matchMedia("(max-width: 767px)").matches;
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   // 0 = logo fully visible, 1 = text fully visible
